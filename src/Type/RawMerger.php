@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Derafu\Merger\Type;
 
-use Derafu\Merger\Contract\MergerInterface;
+use Derafu\Merger\Contract\FormatMergerInterface;
 use Derafu\Merger\Exception\MergerException;
 
 /**
@@ -25,7 +25,7 @@ use Derafu\Merger\Exception\MergerException;
  * `true`, so a `Merger` with this registered last never fails to find a
  * merger for a MIME type it does not recognize.
  */
-final class RawMerger implements MergerInterface
+final class RawMerger implements FormatMergerInterface
 {
     /**
      * {@inheritDoc}

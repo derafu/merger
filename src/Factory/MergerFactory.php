@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Derafu\Merger\Factory;
 
+use Derafu\Merger\Contract\MergerInterface;
 use Derafu\Merger\Merger;
 use Derafu\Merger\Type\HtmlMerger;
 use Derafu\Merger\Type\PdfMerger;
@@ -30,9 +31,9 @@ final class MergerFactory
      * installed), `HtmlMerger`, and `RawMerger` (as the catch-all, always
      * last).
      *
-     * @return Merger
+     * @return MergerInterface
      */
-    public static function create(): Merger
+    public static function create(): MergerInterface
     {
         $merger = new Merger();
 

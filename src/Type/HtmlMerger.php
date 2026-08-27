@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Derafu\Merger\Type;
 
-use Derafu\Merger\Contract\MergerInterface;
+use Derafu\Merger\Contract\FormatMergerInterface;
 use Derafu\Merger\Exception\MergerException;
 use DOMDocument;
 use DOMNode;
@@ -28,7 +28,7 @@ use DOMNode;
  * assembles a single, valid HTML document with all of them, separating each
  * body with a page break so it prints as one page per original document.
  */
-final class HtmlMerger implements MergerInterface
+final class HtmlMerger implements FormatMergerInterface
 {
     private const DEFAULT_PAGE_BREAK = '<div style="page-break-after: always;"></div>';
 

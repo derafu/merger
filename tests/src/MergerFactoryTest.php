@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Derafu\TestsMerger;
 
+use Derafu\Merger\Contract\MergerInterface;
 use Derafu\Merger\Factory\MergerFactory;
 use Derafu\Merger\Merger;
 use Derafu\Merger\Type\HtmlMerger;
@@ -29,7 +30,7 @@ class MergerFactoryTest extends TestCase
 {
     public function testCreatesAMerger(): void
     {
-        $this->assertInstanceOf(Merger::class, MergerFactory::create());
+        $this->assertInstanceOf(MergerInterface::class, MergerFactory::create());
     }
 
     public function testRegistersPdfMergerWhenMpdfIsInstalled(): void

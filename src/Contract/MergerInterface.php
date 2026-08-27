@@ -12,37 +12,48 @@ declare(strict_types=1);
 
 namespace Derafu\Merger\Contract;
 
-use Derafu\Merger\Exception\MergerException;
+use Derafu\Merger\Exception\UnsupportedMimeTypeException;
 
 /**
- * A merger combines multiple contents of the same MIME type into a single
- * one.
- *
- * Implementations know nothing about where the contents came from or why
- * there is more than one — they only know how to combine raw content of one
- * specific MIME type. Whoever calls `merge()` is responsible for deciding
- * what to merge, in what order, and how many times each content should be
- * repeated (already expanded into `$contents` before calling).
+ * Resolves and delegates to the registered `FormatMergerInterface` that
+ * supports a given MIME type.
  */
 interface MergerInterface
 {
     /**
-     * Merges multiple contents into a single one.
+     * Registers a merger. Added after any already registered, so it is only
+     * used if none of the earlier ones support the requested MIME type.
+     *
+     * @param FormatMergerInterface $merger
+     * @return static
+     */
+    public function addMerger(FormatMergerInterface $merger): static;
+
+    /**
+     * Merges multiple contents of the given MIME type into a single one.
      *
      * @param string[] $contents Contents to merge, already expanded and in
      * the desired order. Must contain at least one element.
-     * @param array<string,mixed> $options Merge options, specific to each
-     * merger implementation.
+     * @param string $mimeType MIME type of every content in `$contents`.
+     * @param array<string,mixed> $options Merge options, specific to
+     * whichever merger ends up handling `$mimeType`.
      * @return string The merged content.
-     * @throws MergerException If `$contents` is empty, or the merge fails.
+     * @throws UnsupportedMimeTypeException If no registered merger supports
+     * `$mimeType`.
      */
-    public function merge(array $contents, array $options = []): string;
+    public function merge(
+        array $contents,
+        string $mimeType,
+        array $options = []
+    ): string;
 
     /**
-     * Determines whether this merger can handle the given MIME type.
+     * Gets the registered merger that supports the given MIME type.
      *
      * @param string $mimeType
-     * @return bool
+     * @return FormatMergerInterface
+     * @throws UnsupportedMimeTypeException If no registered merger supports
+     * `$mimeType`.
      */
-    public function supports(string $mimeType): bool;
+    public function getMerger(string $mimeType): FormatMergerInterface;
 }

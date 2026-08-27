@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Derafu\TestsMerger;
 
-use Derafu\Merger\Contract\MergerInterface;
+use Derafu\Merger\Contract\FormatMergerInterface;
 use Derafu\Merger\Exception\UnsupportedMimeTypeException;
 use Derafu\Merger\Merger;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -76,7 +76,7 @@ class MergerTest extends TestCase
     public function testPassesOptionsThroughToTheResolvedMerger(): void
     {
         $merger = new Merger([
-            new class () implements MergerInterface {
+            new class () implements FormatMergerInterface {
                 public function merge(array $contents, array $options = []): string
                 {
                     return serialize($options);
@@ -98,8 +98,8 @@ class MergerTest extends TestCase
         ?string $supportedMimeType,
         string $result,
         bool $catchAll = false
-    ): MergerInterface {
-        return new class ($supportedMimeType, $result, $catchAll) implements MergerInterface {
+    ): FormatMergerInterface {
+        return new class ($supportedMimeType, $result, $catchAll) implements FormatMergerInterface {
             public function __construct(
                 private readonly ?string $supportedMimeType,
                 private readonly string $result,

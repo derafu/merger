@@ -12,11 +12,12 @@ declare(strict_types=1);
 
 namespace Derafu\Merger;
 
+use Derafu\Merger\Contract\FormatMergerInterface;
 use Derafu\Merger\Contract\MergerInterface;
 use Derafu\Merger\Exception\UnsupportedMimeTypeException;
 
 /**
- * Main facade: resolves and delegates to the registered `MergerInterface`
+ * Main facade: resolves and delegates to the registered `FormatMergerInterface`
  * that supports a given MIME type.
  *
  * Instance-based (not static, unlike `Derafu\Selector\Selector`) so it can
@@ -29,15 +30,15 @@ use Derafu\Merger\Exception\UnsupportedMimeTypeException;
  * `supports()` always returns `true`, e.g. `RawMerger`) last, so it never
  * shadows a more specific one.
  */
-final class Merger
+final class Merger implements MergerInterface
 {
     /**
-     * @var MergerInterface[]
+     * @var FormatMergerInterface[]
      */
     private array $mergers = [];
 
     /**
-     * @param iterable<MergerInterface> $mergers
+     * @param iterable<FormatMergerInterface> $mergers
      */
     public function __construct(iterable $mergers = [])
     {
@@ -47,13 +48,9 @@ final class Merger
     }
 
     /**
-     * Registers a merger. Added after any already registered, so it is only
-     * used if none of the earlier ones support the requested MIME type.
-     *
-     * @param MergerInterface $merger
-     * @return static
+     * {@inheritDoc}
      */
-    public function addMerger(MergerInterface $merger): static
+    public function addMerger(FormatMergerInterface $merger): static
     {
         $this->mergers[] = $merger;
 
@@ -61,16 +58,7 @@ final class Merger
     }
 
     /**
-     * Merges multiple contents of the given MIME type into a single one.
-     *
-     * @param string[] $contents Contents to merge, already expanded and in
-     * the desired order. Must contain at least one element.
-     * @param string $mimeType MIME type of every content in `$contents`.
-     * @param array<string,mixed> $options Merge options, specific to
-     * whichever merger ends up handling `$mimeType`.
-     * @return string The merged content.
-     * @throws UnsupportedMimeTypeException If no registered merger supports
-     * `$mimeType`.
+     * {@inheritDoc}
      */
     public function merge(
         array $contents,
@@ -81,14 +69,9 @@ final class Merger
     }
 
     /**
-     * Gets the registered merger that supports the given MIME type.
-     *
-     * @param string $mimeType
-     * @return MergerInterface
-     * @throws UnsupportedMimeTypeException If no registered merger supports
-     * `$mimeType`.
+     * {@inheritDoc}
      */
-    public function getMerger(string $mimeType): MergerInterface
+    public function getMerger(string $mimeType): FormatMergerInterface
     {
         foreach ($this->mergers as $merger) {
             if ($merger->supports($mimeType)) {

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Derafu\Merger\Type;
 
-use Derafu\Merger\Contract\MergerInterface;
+use Derafu\Merger\Contract\FormatMergerInterface;
 use Derafu\Merger\Exception\MergerException;
 use Derafu\Merger\Exception\MissingOptionalDependencyException;
 use Mpdf\Mpdf;
@@ -25,7 +25,7 @@ use setasign\Fpdi\PdfParser\StreamReader;
  * package only requires optionally (`require-dev`/`suggest`) — most
  * consumers of `derafu/merger` will never merge PDFs specifically.
  */
-final class PdfMerger implements MergerInterface
+final class PdfMerger implements FormatMergerInterface
 {
     /**
      * {@inheritDoc}
