@@ -25,19 +25,22 @@
         }
     },
     "require": {
-        "php": "^8.5"
+        "php": "^8.5",
+        "derafu/translation": "dev-main"
     },
     "require-dev": {
         "ext-xdebug": "*",
         "friendsofphp/php-cs-fixer": "^3.95",
         "phpstan/phpstan": "^2.2",
-        "phpunit/phpunit": "^13.3",
+        "phpunit/phpunit": "^13.4",
         "mpdf/mpdf": "^8.3",
-        "setasign/fpdi": "^2.1"
+        "setasign/fpdi": "^2.1",
+        "nikic/php-parser": "^5.9"
     },
     "suggest": {
         "mpdf/mpdf": "Required by PdfMerger to merge PDF documents.",
-        "setasign/fpdi": "Required by PdfMerger to merge PDF documents (already a dependency of mpdf/mpdf, declared here explicitly)."
+        "setasign/fpdi": "Required by PdfMerger to merge PDF documents (already a dependency of mpdf/mpdf, declared here explicitly).",
+        "nikic/php-parser": "Required by the tests of the messages of the package (Derafu\\Translation\\Lint reads the code)."
     },
     "scripts": {
         "docs": "php tools/phpdocumentor run --config=phpdoc.xml",

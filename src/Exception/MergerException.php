@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Derafu\Merger\Exception;
 
-use RuntimeException;
+use Derafu\Translation\Exception\Core\TranslatableRuntimeException;
 
 /**
  * Base exception for all merger related exceptions.
  */
-class MergerException extends RuntimeException
+class MergerException extends TranslatableRuntimeException
 {
 }

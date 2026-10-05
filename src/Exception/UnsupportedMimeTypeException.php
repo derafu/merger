@@ -23,9 +23,9 @@ final class UnsupportedMimeTypeException extends MergerException
 {
     public static function forMimeType(string $mimeType): self
     {
-        return new self(sprintf(
-            'No merger registered supports the MIME type "%s".',
-            $mimeType
-        ));
+        return new self([
+            'No merger registered supports the MIME type "{mimeType}".',
+            'mimeType' => $mimeType,
+        ]);
     }
 }

@@ -27,11 +27,10 @@ final class MissingOptionalDependencyException extends MergerException
      */
     public static function forFeature(string $feature, string $package): self
     {
-        return new self(sprintf(
-            '%s requires %s, which is not installed. Run: composer require %s',
-            $feature,
-            $package,
-            $package
-        ));
+        return new self([
+            '{feature} requires {package}, which is not installed. Run: composer require {package}',
+            'feature' => $feature,
+            'package' => $package,
+        ]);
     }
 }
