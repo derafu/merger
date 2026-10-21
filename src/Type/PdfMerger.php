@@ -60,6 +60,13 @@ final class PdfMerger implements FormatMergerInterface
             for ($page = 1; $page <= $pageCount; $page++) {
                 $templateId = $mpdf->importPage($page);
                 $size = $mpdf->getTemplateSize($templateId);
+                if (!is_array($size)) {
+                    throw new MergerException([
+                        'Cannot determine the dimensions of imported PDF page {page}.',
+                        'page' => $page,
+                    ]);
+                }
+
                 $mpdf->AddPageByArray([
                     'orientation' => $size['width'] > $size['height']
                         ? 'L'

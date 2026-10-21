@@ -12,19 +12,71 @@ declare(strict_types=1);
 
 namespace Derafu\TestsMerger;
 
+use Composer\Autoload\ClassLoader;
 use Derafu\Merger\Exception\MergerException;
+use Derafu\Merger\Exception\MissingOptionalDependencyException;
+use Derafu\Merger\Translation\MergerTranslationResourceProvider;
 use Derafu\Merger\Type\PdfMerger;
+use Derafu\Translation\TranslatorFactory;
 use Mpdf\Mpdf;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use setasign\Fpdi\PdfParser\StreamReader;
 
 #[CoversClass(PdfMerger::class)]
+#[UsesClass(MissingOptionalDependencyException::class)]
+#[UsesClass(MergerTranslationResourceProvider::class)]
 class PdfMergerTest extends TestCase
 {
-    // The `MissingOptionalDependencyException` branch of `merge()` cannot be
-    // exercised here: `mpdf/mpdf` is a `require-dev` dependency of this
-    // package, so it is always installed while running its own test suite.
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    public function testReportsAMissingOptionalDependencyBeforeReadingPdfContents(): void
+    {
+        $this->assertFalse(class_exists(Mpdf::class, false));
+        $loader = require dirname(__DIR__, 2) . '/vendor/autoload.php';
+        $this->assertInstanceOf(ClassLoader::class, $loader);
+        $directories = $loader->getPrefixesPsr4()['Mpdf\\'];
+        $loader->setPsr4('Mpdf\\', []);
+
+        try {
+            try {
+                (new PdfMerger())->merge(['Unread PDF content']);
+                $this->fail('PDF merging must report the missing dependency.');
+            } catch (MissingOptionalDependencyException $exception) {
+                $feature = PdfMerger::class . '::merge()';
+                $this->assertSame("$feature requires mpdf/mpdf, which is not installed. Run: composer require mpdf/mpdf", $exception->getMessage());
+                $translator = TranslatorFactory::create('es', resourceProviders: [new MergerTranslationResourceProvider()]);
+                $this->assertSame("$feature requiere mpdf/mpdf, que no está instalado. Ejecuta: composer require mpdf/mpdf", $exception->trans($translator));
+            }
+        } finally {
+            $loader->setPsr4('Mpdf\\', $directories);
+        }
+    }
+
+    public function testKeepsLandscapeAndPortraitPagesInTheirOriginalOrder(): void
+    {
+        $landscape = new Mpdf(['orientation' => 'L']);
+        $landscape->WriteHTML('<p>Landscape page</p>');
+        $portrait = new Mpdf(['orientation' => 'P']);
+        $portrait->WriteHTML('<p>Portrait page</p>');
+
+        $result = (new PdfMerger())->merge([
+            $landscape->Output('', 'S'),
+            $portrait->Output('', 'S'),
+        ]);
+
+        $reader = new Mpdf();
+        $this->assertSame(2, $reader->setSourceFile(StreamReader::createByString($result)));
+        $first = $reader->getTemplateSize($reader->importPage(1));
+        $second = $reader->getTemplateSize($reader->importPage(2));
+        $this->assertIsArray($first);
+        $this->assertIsArray($second);
+        $this->assertGreaterThan($first['height'], $first['width']);
+        $this->assertGreaterThan($second['width'], $second['height']);
+    }
 
     public function testMergesMultiplePdfsPageByPage(): void
     {

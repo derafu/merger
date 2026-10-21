@@ -38,7 +38,15 @@ final class RawMerger implements FormatMergerInterface
             );
         }
 
-        return implode($options['separator'] ?? '', $contents);
+        $separator = $options['separator'] ?? '';
+        if (!is_string($separator)) {
+            throw new MergerException([
+                'The merge separator must be a string; {type} given.',
+                'type' => get_debug_type($separator),
+            ]);
+        }
+
+        return implode($separator, $contents);
     }
 
     /**
