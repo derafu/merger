@@ -35,7 +35,9 @@
         "phpunit/phpunit": "^13.4",
         "mpdf/mpdf": "^8.3",
         "setasign/fpdi": "^2.6",
-        "nikic/php-parser": "^5.9"
+        "nikic/php-parser": "^5.9",
+        "symfony/dependency-injection": "^8.1",
+        "symfony/config": "^8.1"
     },
     "suggest": {
         "mpdf/mpdf": "Required by PdfMerger to merge PDF documents.",
