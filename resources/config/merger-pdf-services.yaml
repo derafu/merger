@@ -1,0 +1,9 @@
+# Optional PDF support. This includes the base HTML/raw service composition.
+# Install mpdf/mpdf and setasign/fpdi before using PDF merging.
+imports:
+    - { resource: 'merger-services.yaml' }
+
+services:
+    Derafu\Merger\Type\PdfMerger:
+        tags:
+            - { name: derafu_merger.format_merger, priority: 100 }

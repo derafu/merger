@@ -3,6 +3,12 @@
 #
 #   imports:
 #       - { resource: '../vendor/derafu/merger/resources/config/merger-services.yaml' }
+#
+# HTML and raw concatenation are enabled here. Import merger-pdf-services.yaml
+# instead to also enable PDF merging (requires mpdf/mpdf and setasign/fpdi).
+# Contributions use derafu_merger.format_merger, ordered by descending priority.
+# Built-in specific formats use 100; custom overrides can use 200. Keep the raw
+# catch-all at -1000, after every specific format.
 
 services:
 
@@ -10,6 +16,19 @@ services:
         autowire: true
         autoconfigure: true
         public: false
+
+    Derafu\Merger\Contract\MergerInterface:
+        class: Derafu\Merger\Merger
+        arguments:
+            $mergers: !tagged_iterator derafu_merger.format_merger
+
+    Derafu\Merger\Type\HtmlMerger:
+        tags:
+            - { name: derafu_merger.format_merger, priority: 100 }
+
+    Derafu\Merger\Type\RawMerger:
+        tags:
+            - { name: derafu_merger.format_merger, priority: -1000 }
 
     # Feeds resources/translations into the consuming app's Translator (the
     # app must pass $resourceProviders: !tagged_iterator

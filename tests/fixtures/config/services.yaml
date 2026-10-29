@@ -1,0 +1,16 @@
+imports:
+    - { resource: '../../../resources/config/merger-services.yaml' }
+
+services:
+    test.merger:
+        alias: Derafu\Merger\Contract\MergerInterface
+        public: true
+
+    test.translator:
+        class: Symfony\Component\Translation\Translator
+        factory: ['Derafu\Translation\TranslatorFactory', 'create']
+        arguments:
+            $defaultLocale: es
+            $fallbackLocales: [en]
+            $resourceProviders: !tagged_iterator derafu_translation.resource_provider
+        public: true

@@ -1,0 +1,7 @@
+imports:
+    - { resource: 'pdf-services.yaml' }
+
+services:
+    Derafu\TestsMerger\Fixture\SectionHtmlMerger:
+        tags:
+            - { name: derafu_merger.format_merger, priority: 200 }

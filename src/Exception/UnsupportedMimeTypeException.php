@@ -15,9 +15,9 @@ namespace Derafu\Merger\Exception;
 /**
  * Thrown when no registered merger supports the requested MIME type.
  *
- * Should not happen when `Merger` is built through `MergerFactory`, since it
- * always registers a catch-all merger — this is a safety net for a `Merger`
- * assembled manually without one.
+ * The package service configuration registers a catch-all merger. This
+ * exception applies to collections configured without a matching merger
+ * or a catch-all implementation.
  */
 final class UnsupportedMimeTypeException extends MergerException
 {

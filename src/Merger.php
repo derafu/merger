@@ -20,10 +20,8 @@ use Derafu\Merger\Exception\UnsupportedMimeTypeException;
  * Main facade: resolves and delegates to the registered `FormatMergerInterface`
  * that supports a given MIME type.
  *
- * Instance-based (not static, unlike `Derafu\Selector\Selector`) so it can
- * be built with `MergerFactory::create()` for the common case, or assembled
- * by hand (or via a DI container) with a custom list of mergers — including
- * one for a MIME type this package does not natively support.
+ * Receives format mergers from the package's service configuration or an
+ * explicitly supplied collection, including custom MIME type implementations.
  *
  * Mergers are tried in registration order; the first one whose `supports()`
  * returns `true` is used. Register a catch-all merger (one whose
