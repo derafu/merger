@@ -76,7 +76,15 @@ final class PdfMerger implements FormatMergerInterface
             }
         }
 
-        return $mpdf->Output('', 'S');
+        $pdf = $mpdf->Output('', 'S');
+        if (!is_string($pdf)) {
+            throw new MergerException([
+                'The generated PDF must be a string; {type} given.',
+                'type' => get_debug_type($pdf),
+            ]);
+        }
+
+        return $pdf;
     }
 
     /**

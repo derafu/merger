@@ -96,9 +96,13 @@ final class ServicesTest extends TestCase
         $landscape->WriteHTML('<p>First</p>');
         $portrait = new Mpdf(['orientation' => 'P']);
         $portrait->WriteHTML('<p>Second</p>');
+        $landscapePdf = $landscape->Output('', 'S');
+        $portraitPdf = $portrait->Output('', 'S');
+        $this->assertIsString($landscapePdf);
+        $this->assertIsString($portraitPdf);
         $result = $merger->merge([
-            $landscape->Output('', 'S'),
-            $portrait->Output('', 'S'),
+            $landscapePdf,
+            $portraitPdf,
         ], 'application/pdf');
 
         $reader = new Mpdf();

@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 
 return [
+    'The generated PDF must be a string; {type} given.' =>
+        'El PDF generado debe ser un string; se recibió {type}.',
     'The merge separator must be a string; {type} given.' =>
         'El separador de unión debe ser un string; se recibió {type}.',
     'Cannot determine the dimensions of imported PDF page {page}.' =>

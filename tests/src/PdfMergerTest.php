@@ -63,9 +63,14 @@ class PdfMergerTest extends TestCase
         $portrait = new Mpdf(['orientation' => 'P']);
         $portrait->WriteHTML('<p>Portrait page</p>');
 
+        $landscapePdf = $landscape->Output('', 'S');
+        $portraitPdf = $portrait->Output('', 'S');
+        $this->assertIsString($landscapePdf);
+        $this->assertIsString($portraitPdf);
+
         $result = (new PdfMerger())->merge([
-            $landscape->Output('', 'S'),
-            $portrait->Output('', 'S'),
+            $landscapePdf,
+            $portraitPdf,
         ]);
 
         $reader = new Mpdf();
@@ -138,7 +143,10 @@ class PdfMergerTest extends TestCase
         $mpdf = new Mpdf();
         $mpdf->WriteHTML('<p>' . $text . '</p>');
 
-        return $mpdf->Output('', 'S');
+        $pdf = $mpdf->Output('', 'S');
+        $this->assertIsString($pdf);
+
+        return $pdf;
     }
 
     private function makeTwoPagePdf(string $textA, string $textB): string
@@ -148,7 +156,10 @@ class PdfMergerTest extends TestCase
         $mpdf->AddPage();
         $mpdf->WriteHTML('<p>' . $textB . '</p>');
 
-        return $mpdf->Output('', 'S');
+        $pdf = $mpdf->Output('', 'S');
+        $this->assertIsString($pdf);
+
+        return $pdf;
     }
 
     private function countPages(string $pdf): int
